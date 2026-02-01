@@ -1,71 +1,57 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Classical Cipher Web App</title>
-    <link rel="stylesheet" href="style.css">
+  <title>Cryptography Visual Simulator</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="main-container">
 
-    <!-- LEFT SIDE -->
-    <div class="container">
+  <div class="container">
 
-        <h1>Secure Encryption/Decyption</h1>
+    <h1>🔐 Crypto Simulator</h1>
 
-        <label>Plain Text</label>
-        <textarea id="plainText" placeholder="Enter plain text..."></textarea>
+    <label>Plain Text</label>
+    <textarea id="plainText"></textarea>
 
-        <label>Cipher Text</label>
-        <textarea id="cipherText" placeholder="Cipher text appears here..."></textarea>
+    <label>Cipher Text</label>
+    <textarea id="cipherText"></textarea>
 
-        <label>Key</label>
-        <input type="text" id="key" placeholder="Enter key (or matrix / word)">
+    <label>Key</label>
+    <input id="key">
 
-        <label>Cipher Technique</label>
-        <select id="algorithm">
+    <label>Cipher Type</label>
+    <select id="algorithm">
+      <option value="ADDITIVE">Additive</option>
+      <option value="MULTIPLICATIVE">Multiplicative</option>
+      <option value="AFFINE">Affine</option>
+      <option value="VIGENERE">Vigenere</option>
+      <option value="PLAYFAIR">Playfair</option>
+      <option value="HILL">Hill</option>
+      <option value="KEYLESS">Keyless Transposition</option>
+      <option value="KEYED">Keyed Transposition</option>
+    </select>
 
-            <optgroup label="Monoalphabetic Substitution">
-                <option value="ADDITIVE">Additive (Caesar)</option>
-                <option value="MULTIPLICATIVE">Multiplicative</option>
-                <option value="AFFINE">Affine (a,b)</option>
-            </optgroup>
-
-            <optgroup label="Polyalphabetic Substitution">
-                <option value="VIGENERE">Vigenère</option>
-                <option value="PLAYFAIR">Playfair</option>
-                <option value="HILL">Hill Cipher</option>
-            </optgroup>
-
-            <optgroup label="Transposition">
-                <option value="KEYLESS">Keyless Transposition</option>
-                <option value="KEYED">Keyed Transposition</option>
-            </optgroup>
-
-        </select>
-
-        <div class="buttons">
-            <button onclick="encrypt()">Encrypt</button>
-            <button onclick="decrypt()">Decrypt</button>
-        </div>
-
+    <div class="buttons">
+      <button onclick="encrypt()">Encrypt</button>
+      <button onclick="decrypt()">Decrypt</button>
     </div>
 
-    <!-- RIGHT SIDE -->
-    <div class="visual-box">
+  </div>
 
-        <h2>Cipher Visualization</h2>
+  <div class="visual-box">
 
-        <div id="visualSteps">
-            Select a cipher and click visualize
-        </div>
-
-        <button class="visualBtn" onclick="visualize()">
-            Visualize Process
-        </button>
-
+    <div class="tabs">
+      <button onclick="openTab('visual')">Visualizer</button>
+      <button onclick="openTab('theory')">Theory</button>
     </div>
+
+    <div id="visual" class="tab-content"></div>
+
+    <div id="theory" class="tab-content"></div>
+
+  </div>
 
 </div>
 

@@ -1,207 +1,123 @@
-const API_URL = "http://localhost:3000";
+const API="http://localhost:3000";
 
-const plainText = document.getElementById("plainText");
-const cipherText = document.getElementById("cipherText");
-const keyInput = document.getElementById("key");
-const algorithm = document.getElementById("algorithm");
+const plainText=document.getElementById("plainText");
+const cipherText=document.getElementById("cipherText");
+const keyInput=document.getElementById("key");
+const algo=document.getElementById("algorithm");
+const visual=document.getElementById("visual");
+const theory=document.getElementById("theory");
 
-// ================= ENCRYPT =================
+// ---------------- Tabs ----------------
 
-async function encrypt() {
-
-    if (!plainText.value || !algorithm.value) {
-        alert("Enter text and choose cipher!");
-        return;
-    }
-
-    const response = await fetch(API_URL + "/encrypt", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            text: plainText.value,
-            key: keyInput.value,
-            cipherType: algorithm.value
-        })
-    });
-
-    const data = await response.json();
-    cipherText.value = data.cipherText;
+function openTab(tab){
+  document.querySelectorAll(".tab-content").forEach(t=>t.style.display="none");
+  document.getElementById(tab).style.display="block";
 }
 
-// ================= DECRYPT =================
+openTab("visual");
 
-async function decrypt() {
+// ---------------- Encrypt ----------------
 
-    if (!cipherText.value || !algorithm.value) {
-        alert("Enter cipher text!");
-        return;
-    }
-
-    const response = await fetch(API_URL + "/decrypt", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            cipherText: cipherText.value,
-            key: keyInput.value,
-            cipherType: algorithm.value
-        })
-    });
-
-    const data = await response.json();
-    plainText.value = data.plainText;
+async function encrypt(){
+ const res=await fetch(API+"/encrypt",{
+  method:"POST",
+  headers:{"Content-Type":"application/json"},
+  body:JSON.stringify({
+   text:plainText.value,
+   key:keyInput.value,
+   cipherType:algo.value
+  })
+ });
+ const data=await res.json();
+ cipherText.value=data.cipherText;
+ visualizeEncrypt();
+ loadTheory();
 }
 
-function visualize() {
+// ---------------- Decrypt ----------------
 
-    const text = plainText.value.toUpperCase();
-    const key = keyInput.value;
-    const type = algorithm.value;
+async function decrypt(){
+ const res=await fetch(API+"/decrypt",{
+  method:"POST",
+  headers:{"Content-Type":"application/json"},
+  body:JSON.stringify({
+   cipherText:cipherText.value,
+   key:keyInput.value,
+   cipherType:algo.value
+  })
+ });
+ const data=await res.json();
+ plainText.value=data.plainText;
+ visualizeDecrypt();
+}
 
-    let steps = "";
+// ---------------- Animated Visualization ----------------
 
-    if(!text){
-        document.getElementById("visualSteps").innerText = "Enter text first!";
-        return;
-    }
+function visualizeEncrypt(){
 
-    switch(type){
+ let text=plainText.value.toUpperCase();
+ let key=keyInput.value;
 
-        case "ADDITIVE": {
+ let html=`<div class='step'>Plain: <span class='highlight'>${text}</span></div>`;
 
-            const shift = Number(key);
-            let result = "";
+ if(algo.value==="ADDITIVE"){
+   html+=`<div class='step'>Shift by ${key}</div>`;
+ }
 
-            for(let c of text){
-                if(/[A-Z]/.test(c)){
-                    result += String.fromCharCode((c.charCodeAt(0)-65+shift)%26+65);
-                }
-            }
+ if(algo.value==="KEYLESS"){
+   let even="",odd="";
+   for(let i=0;i<text.length;i++){
+    i%2===0?even+=text[i]:odd+=text[i];
+   }
 
-            steps = 
-`Plain Text : ${text}
-Shift : ${shift}
+   html+=`
+   <div class='step'>Even: ${even}</div>
+   <div class='step'>Odd: ${odd}</div>
+   <div class='step highlight'>Cipher: ${even+odd}</div>`;
+ }
 
-${text}
-↓
-${result}`;
+ if(algo.value==="KEYED"){
+   html+=`
+   <div class='step'>Arranged in Matrix:</div>
+   <table><tr><td>${text[0]||""}</td><td>${text[1]||""}</td></tr>
+   <tr><td>${text[2]||""}</td><td>${text[3]||""}</td></tr></table>`;
+ }
 
-            break;
-        }
+ if(algo.value==="VIGENERE"){
+   let exp="";
+   for(let i=0;i<text.length;i++) exp+=key[i%key.length];
+   html+=`
+   <div class='step'>Key Expanded: ${exp}</div>`;
+ }
 
-        case "VIGENERE": {
+ html+=`<div class='step highlight'>Cipher: ${cipherText.value}</div>`;
 
-            let expandedKey = "";
-            for(let i=0;i<text.length;i++){
-                expandedKey += key[i % key.length].toUpperCase();
-            }
+ visual.innerHTML=html;
+}
 
-            let result="";
+// ---------------- Decryption Visualization ----------------
 
-            for(let i=0;i<text.length;i++){
-                let v=(text.charCodeAt(i)-65 + expandedKey.charCodeAt(i)-65)%26;
-                result+=String.fromCharCode(v+65);
-            }
+function visualizeDecrypt(){
+ visual.innerHTML=
+ `<div class='step'>Cipher: <span class='highlight'>${cipherText.value}</span></div>
+  <div class='step'>Reverse operations applied</div>
+  <div class='step highlight'>Plain: ${plainText.value}</div>`;
+}
 
-            steps=
-`Plain Text : ${text}
-Key : ${expandedKey}
+// ---------------- Theory Tab ----------------
 
-Calculation:
-${text}
-+ ${expandedKey}
-= ${result}`;
+function loadTheory(){
 
-            break;
-        }
+ const map={
+  ADDITIVE:"Shifts letters by fixed number.",
+  MULTIPLICATIVE:"Multiplies letter positions modulo 26.",
+  AFFINE:"Uses (a×x + b) mod 26 formula.",
+  VIGENERE:"Uses repeating keyword shifts.",
+  PLAYFAIR:"Encrypts digraphs using 5x5 matrix.",
+  HILL:"Uses matrix multiplication.",
+  KEYLESS:"Splits even & odd positions.",
+  KEYED:"Columnar transposition with key."
+ };
 
-        case "HILL": {
-
-            const k = key.split(",").map(Number);
-
-            if(k.length!==4){
-                steps="Enter Hill key as: a,b,c,d";
-                break;
-            }
-
-            let x=text.charCodeAt(0)-65;
-            let y=text.charCodeAt(1)-65;
-
-            let c1=(k[0]*x + k[1]*y)%26;
-            let c2=(k[2]*x + k[3]*y)%26;
-
-            steps=
-`Plain Pair: ${text.slice(0,2)} → [${x} ${y}]
-
-Key Matrix:
-[${k[0]} ${k[1]}]
-[${k[2]} ${k[3]}]
-
-Multiply:
-(${k[0]}×${x}+${k[1]}×${y}) mod 26 = ${c1}
-(${k[2]}×${x}+${k[3]}×${y}) mod 26 = ${c2}
-
-Cipher:
-${String.fromCharCode(c1+65)}${String.fromCharCode(c2+65)}`;
-
-            break;
-        }
-
-        case "KEYLESS": {
-
-            let even="", odd="";
-
-            for(let i=0;i<text.length;i++){
-                i%2===0 ? even+=text[i] : odd+=text[i];
-            }
-
-            steps=
-`Plain Text: ${text}
-
-Even positions: ${even}
-Odd positions: ${odd}
-
-Cipher:
-${even+odd}`;
-
-            break;
-        }
-
-        case "KEYED": {
-
-            steps=
-`Text arranged in matrix
-Columns reordered by key alphabet
-Read column-wise for cipher`;
-
-            break;
-        }
-
-        case "PLAYFAIR":
-
-            steps=
-`Create 5×5 matrix using key
-Split text into digraphs
-Apply Playfair rules`;
-
-            break;
-
-        case "MULTIPLICATIVE":
-
-            steps=
-`Each letter position multiplied by key mod 26`;
-
-            break;
-
-        case "AFFINE":
-
-            steps=
-`Apply (a × x + b) mod 26 per letter`;
-
-            break;
-
-        default:
-            steps="Select cipher type";
-    }
-
-    document.getElementById("visualSteps").innerText = steps;
+ theory.innerText=map[algo.value];
 }
