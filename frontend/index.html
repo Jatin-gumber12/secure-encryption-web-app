@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Secure Encryption Web App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="main-container">
+
+    <!-- LEFT SIDE -->
+    <div class="container">
+
+        <h1>🔐 Secure Encryption App</h1>
+
+        <label>Plain Text</label>
+        <textarea id="plainText" placeholder="Enter plain text..."></textarea>
+
+        <label>Cipher Text</label>
+        <textarea id="cipherText" placeholder="Cipher text appears here..."></textarea>
+
+        <label>Key</label>
+        <input type="text" id="key" placeholder="Enter key">
+
+        <label>Password</label>
+        <input type="password" id="password" placeholder="Enter password">
+
+        <label>Encryption Method</label>
+        <select id="algorithm">
+            <option value="AES">AES Encryption</option>
+            <option value="PRODUCT">Product Cipher</option>
+        </select>
+
+        <div class="buttons">
+            <button onclick="encrypt()">Encrypt</button>
+            <button onclick="decrypt()">Decrypt</button>
+        </div>
+
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="visual-box">
+
+        <h2>🔍 Process Visualization</h2>
+
+        <div id="visualSteps">
+            Click Visualize to see encryption/decryption steps...
+        </div>
+
+        <button class="visualBtn" onclick="visualize()">
+            Visualize Process
+        </button>
+
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
