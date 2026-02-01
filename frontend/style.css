@@ -16,7 +16,7 @@ body {
 .container {
     background: #1e293b;
     padding: 25px;
-    width: 400px;
+    width: 420px;
     border-radius: 10px;
     box-shadow: 0 0 15px rgba(0,0,0,0.5);
 }
@@ -24,7 +24,7 @@ body {
 .visual-box {
     background: #1e293b;
     padding: 20px;
-    width: 300px;
+    width: 320px;
     border-radius: 10px;
     box-shadow: 0 0 15px rgba(0,0,0,0.5);
 }
@@ -72,9 +72,9 @@ button:hover {
 
 #visualSteps {
     background: #0f172a;
-    padding: 10px;
+    padding: 12px;
     border-radius: 5px;
-    min-height: 150px;
+    min-height: 180px;
     font-size: 14px;
     line-height: 1.6;
     margin-bottom: 10px;

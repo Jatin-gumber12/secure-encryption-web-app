@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Secure Encryption Web App</title>
+    <title>Classical Cipher Web App</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,7 +12,7 @@
     <!-- LEFT SIDE -->
     <div class="container">
 
-        <h1>🔐 Secure Encryption App</h1>
+        <h1>Secure Encryption/Decyption</h1>
 
         <label>Plain Text</label>
         <textarea id="plainText" placeholder="Enter plain text..."></textarea>
@@ -21,15 +21,28 @@
         <textarea id="cipherText" placeholder="Cipher text appears here..."></textarea>
 
         <label>Key</label>
-        <input type="text" id="key" placeholder="Enter key">
+        <input type="text" id="key" placeholder="Enter key (or matrix / word)">
 
-        <label>Password</label>
-        <input type="password" id="password" placeholder="Enter password">
-
-        <label>Encryption Method</label>
+        <label>Cipher Technique</label>
         <select id="algorithm">
-            <option value="AES">AES Encryption</option>
-            <option value="PRODUCT">Product Cipher</option>
+
+            <optgroup label="Monoalphabetic Substitution">
+                <option value="ADDITIVE">Additive (Caesar)</option>
+                <option value="MULTIPLICATIVE">Multiplicative</option>
+                <option value="AFFINE">Affine (a,b)</option>
+            </optgroup>
+
+            <optgroup label="Polyalphabetic Substitution">
+                <option value="VIGENERE">Vigenère</option>
+                <option value="PLAYFAIR">Playfair</option>
+                <option value="HILL">Hill Cipher</option>
+            </optgroup>
+
+            <optgroup label="Transposition">
+                <option value="KEYLESS">Keyless Transposition</option>
+                <option value="KEYED">Keyed Transposition</option>
+            </optgroup>
+
         </select>
 
         <div class="buttons">
@@ -42,10 +55,10 @@
     <!-- RIGHT SIDE -->
     <div class="visual-box">
 
-        <h2>🔍 Process Visualization</h2>
+        <h2>Cipher Visualization</h2>
 
         <div id="visualSteps">
-            Click Visualize to see encryption/decryption steps...
+            Select a cipher and click visualize
         </div>
 
         <button class="visualBtn" onclick="visualize()">
